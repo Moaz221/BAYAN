@@ -211,7 +211,7 @@ export const Hero = () => {
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }} className="text-3xl lg:text-5xl text-white font-bold font-amiri mt-1" style={{ textShadow: '0 2px 20px rgba(212,175,55,0.25)' }}>
-                إسماعيل رمضان
+                إسماعيل العربي 
               </motion.h2>
             </div>
 
