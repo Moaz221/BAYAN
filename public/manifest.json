@@ -1,0 +1,30 @@
+{
+  "name": "منصة بيان - تعليم اللغة العربية",
+  "short_name": "بيان",
+  "description": "منصة بيان: باقات اشتراك، دروس فيديو، واختبارات تفاعلية للثانوية",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#05070A",
+  "background_color": "#05070A",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/Bayan-Icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Bayan-Icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/Bayan-Icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
