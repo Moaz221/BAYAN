@@ -322,7 +322,7 @@ const Footer = ({ compact = false }) => {
               <p className="text-gray-600">
                 Developed by{' '}
                 <a
-                  href="https://moaz221.github.io/portfolio/"
+                  href="https://portfolio-neon-phi-85.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="زيارة موقع المطور Moaz Ragab"
