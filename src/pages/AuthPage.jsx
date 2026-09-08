@@ -101,10 +101,17 @@ const AuthPage = () => {
     try {
       // ════ LOGIN ════
       if (authState === 'login') {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('TIMEOUT')), 15000),
+        );
+
+        const { data, error } = await Promise.race([
+          supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password,
+          }),
+          timeoutPromise,
+        ]);
 
         if (error) throw error;
 
@@ -224,6 +231,8 @@ const AuthPage = () => {
         msg = 'البريد الإلكتروني غير صحيح.';
       if (msg.includes('Auth session missing'))
         msg = 'رابط إعادة التعيين غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا.';
+      if (msg.includes('TIMEOUT'))
+        msg = 'في مشكلة في الاتصال، تأكد من النت وحاول تاني.';
 
       setErrorMsg(msg);
     } finally {
