@@ -5,6 +5,24 @@ import App from './App.jsx'
 import './index.css'
 import faviconUrl from './assets/Bayan-Icon.png'
 
+const APP_VERSION = import.meta.env.VITE_APP_VERSION
+const VERSION_STORAGE_KEY = 'bayan-app-version'
+
+const checkAppVersion = () => {
+  if (!APP_VERSION || typeof window === 'undefined') return
+
+  try {
+    const storedVersion = window.localStorage.getItem(VERSION_STORAGE_KEY)
+    window.localStorage.setItem(VERSION_STORAGE_KEY, APP_VERSION)
+
+    if (storedVersion && storedVersion !== APP_VERSION) {
+      window.location.reload()
+    }
+  } catch (error) {
+    console.warn('App version check skipped:', error)
+  }
+}
+
 // Dynamically set favicon using Vite-processed asset URL to avoid root public copying
 const setFavicon = (url) => {
   try {
@@ -24,10 +42,12 @@ const setFavicon = (url) => {
       document.getElementsByTagName('head')[0].appendChild(apple);
     }
     apple.href = url;
-  } catch (e) {
+  } catch {
     // ignore in non-browser env
   }
 }
+
+checkAppVersion()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
