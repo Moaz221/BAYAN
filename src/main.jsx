@@ -9,7 +9,7 @@ const APP_VERSION = import.meta.env.VITE_APP_VERSION
 const VERSION_STORAGE_KEY = 'bayan-app-version'
 
 const checkAppVersion = () => {
-  if (!APP_VERSION || typeof window === 'undefined') return
+  if (import.meta.env.DEV || !APP_VERSION || typeof window === 'undefined') return
 
   try {
     const storedVersion = window.localStorage.getItem(VERSION_STORAGE_KEY)
