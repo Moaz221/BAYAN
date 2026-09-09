@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { getCurrentSession, getUserProfile } from '../lib/auth';
 
@@ -8,14 +8,31 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const profileRequestRef = useRef(0);
 
   const fetchProfile = async (userId) => {
+    const requestId = ++profileRequestRef.current;
+    console.log('[Auth] Fetching profile:', userId);
+
     try {
-      const profileData = await getUserProfile(userId);
-      setProfile(profileData);
+      const profilePromise = getUserProfile(userId);
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('PROFILE_TIMEOUT')), 10000),
+      );
+      const profileData = await Promise.race([profilePromise, timeoutPromise]);
+
+      if (requestId === profileRequestRef.current) {
+        console.log('[Auth] Profile loaded:', profileData);
+        setProfile(profileData);
+      }
     } catch (error) {
-      setProfile(null);
+      if (requestId === profileRequestRef.current) {
+        console.error('[Auth] Profile load failed:', error);
+        setProfile(null);
+      }
     }
+
+    return requestId === profileRequestRef.current;
   };
 
   useEffect(() => {
@@ -28,6 +45,7 @@ export const AuthProvider = ({ children }) => {
         if (!mounted) return;
 
         setSession(currentSession || null);
+        console.log('[Auth] Initial session:', currentSession?.user?.id || null);
 
         if (currentSession?.user?.id) {
           await fetchProfile(currentSession.user.id);
@@ -43,16 +61,26 @@ export const AuthProvider = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      console.log('[Auth] Auth state changed:', _event, newSession?.user?.id || null);
+
+      if (_event === 'INITIAL_SESSION') return;
+
       setSession(newSession || null);
 
       if (newSession?.user?.id) {
-        await fetchProfile(newSession.user.id);
+        setLoading(true);
+        // Defer Supabase work until the auth callback has released its internal lock.
+        setTimeout(() => {
+          if (!mounted) return;
+          void fetchProfile(newSession.user.id).finally(() => {
+            if (mounted) setLoading(false);
+          });
+        }, 0);
       } else {
         setProfile(null);
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return () => {

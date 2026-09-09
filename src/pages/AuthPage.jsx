@@ -64,17 +64,24 @@ const AuthPage = () => {
 
   // ✅ Redirect مباشرة على الـ Dashboard
   const checkUserStatus = async (userId) => {
-    const { data, error } = await supabase
+    console.log('[AuthPage] Checking user profile:', userId);
+    const profilePromise = supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('PROFILE_TIMEOUT')), 10000),
+    );
+    const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
 
     if (error || !data) {
+      console.warn('[AuthPage] Profile unavailable, going to dashboard:', error);
       navigate('/dashboard');
       return;
     }
 
+    console.log('[AuthPage] Profile loaded, role:', data.role);
     if (data.role === 'admin') {
       navigate('/admin');
       return;
@@ -231,7 +238,7 @@ const AuthPage = () => {
         msg = 'البريد الإلكتروني غير صحيح.';
       if (msg.includes('Auth session missing'))
         msg = 'رابط إعادة التعيين غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا.';
-      if (msg.includes('TIMEOUT'))
+      if (msg.includes('TIMEOUT') || msg.includes('PROFILE_TIMEOUT'))
         msg = 'في مشكلة في الاتصال، تأكد من النت وحاول تاني.';
 
       setErrorMsg(msg);
