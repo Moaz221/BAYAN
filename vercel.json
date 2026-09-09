@@ -29,6 +29,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/((?!sitemap.xml).*)", "destination": "/" }
+    {
+      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff2|sitemap\\.xml)$).*)",
+      "destination": "/index.html"
+    }
   ]
 }
