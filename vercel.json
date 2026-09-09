@@ -30,7 +30,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff2|sitemap\\.xml)$).*)",
+      "source": "/((?!sitemap\\.xml$)(?!.*\\.[^/]+$).*)",
       "destination": "/index.html"
     }
   ]
