@@ -15,6 +15,20 @@
   background-color: rgba(255, 255, 255, 0.08);
 }
 
+.admin-sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.45) transparent;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.admin-sidebar-nav::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background-color: rgba(212, 175, 55, 0.45);
+}
+
 .admin-topbar {
   backdrop-filter: blur(16px);
 }
