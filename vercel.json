@@ -1,16 +1,7 @@
 {
   "headers": [
     {
-      "source": "/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*\\.html)",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -30,7 +21,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff2|sitemap\\.xml)$).*)",
+      "source": "/((?!.*\\..*).*)",
       "destination": "/index.html"
     }
   ]
